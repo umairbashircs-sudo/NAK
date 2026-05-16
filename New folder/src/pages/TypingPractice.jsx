@@ -190,10 +190,24 @@ function TypingPractice() {
 
   return (
     <div className="glass-card" style={{ maxWidth: '1000px', width: '100%' }}>
-      <div className="controls" style={{ marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 className="urdu-text" style={{ margin: 0, minWidth: '150px' }}>ٹائپنگ مشق</h2>
+      <div className="typing-header">
+        <div className="timer-section">
+          <div className="timer">
+            <span className="time">{timeLeft}</span>
+            <span className="label">TIME LEFT</span>
+          </div>
+          {isRunning && (
+            <button 
+              onClick={handleRestart} 
+              className="restart-btn-small"
+              title="Restart Test"
+            >
+              ↻
+            </button>
+          )}
+        </div>
         
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="controls">
           <select 
             className="timer-select urdu-text" 
             value={level} 
@@ -224,13 +238,6 @@ function TypingPractice() {
             <option value={300}>5 منٹ</option>
             <option value={600}>10 منٹ</option>
           </select>
-          <Timer 
-            timeLimit={timeLimit} 
-            timeLeft={timeLeft} 
-            setTimeLeft={setTimeLeft} 
-            isRunning={isRunning} 
-            onTimeUp={handleTimeUp} 
-          />
         </div>
       </div>
 

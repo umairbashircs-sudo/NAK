@@ -26,7 +26,7 @@ function App() {
       </main>
       
       <footer className="footer">
-        <p>© 2026 Urdu Typing Practice. All rights reserved.</p>
+        <p>Developed by <span>Umair Bashir Bhatti</span> | © 2026 Urdu Typing Practice.</p>
       </footer>
     </div>
   );
