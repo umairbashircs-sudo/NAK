@@ -125,6 +125,7 @@ function TypingArea({
         value={currentInput}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
+        onPaste={(e) => e.preventDefault()}
         placeholder={!isRunning ? "یہاں ٹائپ کرنا شروع کریں..." : ""}
         dir="rtl"
         autoComplete="off"

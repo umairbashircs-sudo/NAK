@@ -22,6 +22,7 @@ function TypingPractice() {
   const [isRunning, setIsRunning] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [startTime, setStartTime] = useState(null);
   
   // Stats
   const [grossWpm, setGrossWpm] = useState(0);
@@ -67,6 +68,7 @@ function TypingPractice() {
       
       // Each submitted word effectively includes a space, so +1 to keystrokes
       totalKeystrokes += typedLen + 1; 
+      correctKeystrokes += 1; // The space itself is a correct keystroke
 
       for (let j = 0; j < maxLen; j++) {
         if (typed[j] === target[j]) {
@@ -96,7 +98,12 @@ function TypingPractice() {
 
     setErrors(uncorrectedErrors);
     
-    const timeSpentMinutes = ((timeLimit - timeLeft) || 1) / 60;
+    // Precise time calculation
+    let timeSpentMinutes = 1 / 60; // Default to 1 second to avoid Infinity
+    if (startTime) {
+      const elapsedMs = Date.now() - startTime;
+      timeSpentMinutes = Math.max(elapsedMs / 60000, 1/60); // At least 1 sec
+    }
     
     // Standard Gross WPM
     const gross = Math.round((totalKeystrokes / 5) / timeSpentMinutes);
@@ -115,10 +122,13 @@ function TypingPractice() {
   }, [typedWords, currentInput, words, activeIndex, timeLeft, timeLimit]);
 
   useEffect(() => {
+    if (isRunning && !startTime) {
+      setStartTime(Date.now());
+    }
     if (isRunning) {
       calculateStats();
     }
-  }, [typedWords, currentInput, isRunning, calculateStats]);
+  }, [typedWords, currentInput, isRunning, calculateStats, startTime]);
 
   const handleTimeUp = useCallback(async () => {
     setIsRunning(false);
@@ -149,6 +159,7 @@ function TypingPractice() {
     setIsRunning(false);
     setIsFinished(false);
     setTimeLeft(timeLimit);
+    setStartTime(null);
     setGrossWpm(0);
     setNetWpm(0);
     setAccuracy(100);

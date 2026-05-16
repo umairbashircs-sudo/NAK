@@ -3,14 +3,7 @@ const cheerio = require('cheerio');
 
 const levels = {
   1: ["اب تب کب جب ہم تم", "یہ وہ اس ان جن", "کل چل پل مل دل", "سب رب کب تب اب"],
-  2: ["یہ ایک خوبصورت کتاب ہے۔", "میں روزانہ سکول جاتا ہوں۔", "علم حاصل کرنا فرض ہے۔", "محنت میں عظمت ہے۔"],
-  3: ["اردو ہماری قومی زبان ہے۔ یہ بہت میٹھی اور خوبصورت ہے۔ پاکستان میں اردو بولی اور سمجھی جاتی ہے۔"],
-  4: ["علامہ اقبال نے نوجوانوں کو شاہین سے تشبیہ دی ہے۔ ان کا ماننا تھا کہ نوجوان ہی قوم کا اصل مستقبل اور سرمایہ ہیں۔"],
-  5: ["تعلیم کسی بھی قوم کی ترقی کے لیے انتہائی ضروری ہے۔ یہ انسان کو شعور بخشتی ہے اور جہالت کے اندھیرے سے نکال کر روشنی کی طرف لاتی ہے۔"],
-  6: ["پانی زندگی کی بنیادی ضرورت ہے۔ ہمیں پانی کو ضائع ہونے سے بچانا چاہیے تاکہ آنے والی نسلیں بھی اس نعمت سے فائدہ اٹھا سکیں۔"],
-  7: ["کھیل کود انسانی صحت کے لیے بہت مفید ہیں۔ ان سے نہ صرف جسمانی فٹنس برقرار رہتی ہے بلکہ ذہنی تناؤ بھی کم ہوتا ہے۔"],
-  8: ["انٹرنیٹ کی بدولت آج پوری دنیا ایک گلوبل ولیج بن چکی ہے۔ ہم سیکنڈوں میں دنیا کے کسی بھی کونے میں موجود معلومات تک رسائی حاصل کر سکتے ہیں۔"],
-  9: ["موسمیاتی تبدیلی اس وقت دنیا کا سب سے بڑا مسئلہ ہے۔ درخت کاٹنا اور آلودگی پھیلانا ماحولیات کو تباہ کر رہا ہے۔ ہمیں مل کر اس کرہ ارض کو بچانے کے لیے زیادہ سے زیادہ درخت لگانے ہوں گے۔"]
+  2: ["یہ ایک خوبصورت کتاب ہے۔", "میں روزانہ سکول جاتا ہوں۔", "علم حاصل کرنا فرض ہے۔", "محنت میں عظمت ہے۔"]
 };
 
 const newsSites = [
@@ -25,30 +18,39 @@ const newsSites = [
 ];
 
 async function scrapeNewsParagraph() {
-  // Try up to 3 random sites to find a paragraph
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     const site = newsSites[Math.floor(Math.random() * newsSites.length)];
     try {
-      const response = await axios.get(site, { timeout: 5000 });
+      const response = await axios.get(site, { timeout: 8000 });
       const $ = cheerio.load(response.data);
-      const paragraphs = [];
+      const validParagraphs = [];
       
       $('p').each((idx, el) => {
         const text = $(el).text().trim();
-        // Urdu paragraphs usually have spaces and are long enough
-        if (text.length > 80 && text.length < 500 && text.includes(' ')) {
-          paragraphs.push(text);
+        // Look for actual Urdu text content
+        if (text.length > 50 && text.includes(' ')) {
+          validParagraphs.push(text);
         }
       });
       
-      if (paragraphs.length > 0) {
-        return paragraphs[Math.floor(Math.random() * paragraphs.length)];
+      // Shuffle the paragraphs to get a random mix
+      validParagraphs.sort(() => 0.5 - Math.random());
+      
+      // Concatenate paragraphs to make a HUGE text block so they never run out
+      let combinedText = "";
+      for (const p of validParagraphs) {
+        combinedText += p + " ";
+        if (combinedText.length > 2500) break;
+      }
+      
+      if (combinedText.length > 200) {
+        return combinedText.trim();
       }
     } catch (err) {
       console.log(`Failed to scrape ${site}:`, err.message);
     }
   }
-  throw new Error("Could not fetch from news sites");
+  throw new Error("Could not fetch enough text from news sites");
 }
 
 exports.handler = async (event, context) => {
@@ -56,29 +58,27 @@ exports.handler = async (event, context) => {
     const level = parseInt(event.queryStringParameters?.level || "1");
     let text = "";
 
-    if (level >= 1 && level <= 9) {
+    if (level === 1 || level === 2) {
       const options = levels[level];
       text = options[Math.floor(Math.random() * options.length)];
-    } else if (level === 10) {
-      try {
-        text = await scrapeNewsParagraph();
-      } catch (err) {
-        // Fallback for level 10 if scraping fails
-        text = "حالیہ خبروں کے مطابق، ملک بھر میں گرمی کی شدت میں اضافہ متوقع ہے۔ محکمہ موسمیات نے عوام کو احتیاطی تدابیر اختیار کرنے کی ہدایت کی ہے۔";
+      // Multiply text until it's very long
+      while (text.length < 2000) {
+        text += " " + options[Math.floor(Math.random() * options.length)];
       }
     } else {
-      text = levels[1][0];
-    }
-
-    // Multiply shorter texts so user has enough to type for a minute
-    if (level === 1) {
-      text = Array(15).fill(text).join(' ');
-    } else if (level === 2) {
-      text = Array(5).fill(text).join(' ');
-    } else if (level >= 3 && level <= 5) {
-      text = Array(3).fill(text).join(' ');
-    } else if (level >= 6 && level <= 9) {
-      text = Array(2).fill(text).join(' ');
+      // Levels 3 to 10 all use lengthy news paragraphs
+      try {
+        text = await scrapeNewsParagraph();
+        // If it's still somehow short, duplicate it
+        while (text.length > 0 && text.length < 2000) {
+          text += " " + text;
+        }
+      } catch (err) {
+        text = "حالیہ خبروں کے مطابق ملک بھر میں گرمی کی شدت میں اضافہ متوقع ہے۔ محکمہ موسمیات نے عوام کو احتیاطی تدابیر اختیار کرنے کی ہدایت کی ہے۔ حکومت کی جانب سے نئے ترقیاتی منصوبوں کا اعلان کیا گیا ہے جس سے ملکی معیشت کو سہارا ملے گا۔";
+        while (text.length < 2000) {
+          text += " " + text;
+        }
+      }
     }
 
     return {
