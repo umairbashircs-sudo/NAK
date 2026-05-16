@@ -169,7 +169,7 @@ body {
 
 .text-display {
   font-size: 1.8rem;
-  line-height: 2.5;
+  line-height: 2.2;
   color: #64748b;
   margin-bottom: 1.5rem;
   user-select: none;
@@ -177,6 +177,10 @@ body {
   padding: 1.5rem;
   border-radius: 12px;
   border: 1px solid var(--border-color);
+  max-height: 160px;
+  overflow: hidden;
+  position: relative;
+  cursor: text;
 }
 
 .word {
@@ -215,15 +219,12 @@ body {
 }
 
 .typing-input {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-color);
-  transition: border-color 0.3s ease;
-  direction: rtl;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  width: 0;
+  overflow: hidden;
 }
 
 .typing-input:focus {

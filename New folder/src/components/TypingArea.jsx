@@ -13,6 +13,7 @@ function TypingArea({
   onComplete
 }) {
   const inputRef = useRef(null);
+  const textDisplayRef = useRef(null);
 
   useEffect(() => {
     if (isRunning && inputRef.current) {
@@ -49,6 +50,17 @@ function TypingArea({
       }
     }
   };
+
+  // Scroll the active word into view smoothly
+  useEffect(() => {
+    if (textDisplayRef.current) {
+      const activeEl = textDisplayRef.current.querySelector('.active-word');
+      if (activeEl) {
+        // Scroll the container so the active word is in the center
+        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [activeIndex]);
 
   const handleInputChange = (e) => {
     // Only accept input if we haven't finished all words
@@ -112,6 +124,7 @@ function TypingArea({
     <div className="typing-container">
       <div 
         className="text-display" 
+        ref={textDisplayRef}
         onClick={() => inputRef.current && inputRef.current.focus()}
         dir="rtl"
         style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 1rem', padding: '2rem' }}
