@@ -153,20 +153,31 @@ function TypingPractice() {
     }
   }, [calculateStats, netWpm, accuracy, errors]);
 
-  // Timer interval logic
+  // Timer interval logic (strictly separated to prevent resets on typing)
   useEffect(() => {
     let timerId;
-    if (isRunning && timeLeft > 0) {
+    if (isRunning) {
       timerId = setInterval(() => {
-        setTimeLeft(prev => prev - 1);
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timerId);
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
-    } else if (timeLeft === 0 && isRunning) {
-      handleTimeUp();
     }
     return () => {
       if (timerId) clearInterval(timerId);
     };
-  }, [isRunning, timeLeft, handleTimeUp]);
+  }, [isRunning]);
+
+  // Trigger time up when timer hits 0
+  useEffect(() => {
+    if (isRunning && timeLeft === 0) {
+      handleTimeUp();
+    }
+  }, [timeLeft, isRunning, handleTimeUp]);
 
   const resetState = () => {
     setTypedWords([]);
