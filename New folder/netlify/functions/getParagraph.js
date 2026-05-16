@@ -14,7 +14,8 @@ const newsSites = [
   'https://www.express.pk/',
   'https://www.nawaiwaqt.com.pk/',
   'https://www.dailyausaf.com/',
-  'https://www.humsub.com.pk/'
+  'https://www.humsub.com.pk/',
+  'https://ur.wikipedia.org/wiki/Special:Random'
 ];
 
 async function scrapeNewsParagraph() {
@@ -26,7 +27,7 @@ async function scrapeNewsParagraph() {
       const validParagraphs = [];
       
       $('p').each((idx, el) => {
-        const text = $(el).text().trim();
+        let text = $(el).text().trim();
         // Look for actual Urdu text content
         if (text.length > 50 && text.includes(' ')) {
           validParagraphs.push(text);

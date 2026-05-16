@@ -262,7 +262,14 @@ function TypingPractice() {
             dir="rtl"
           >
             <option value={60}>1 منٹ</option>
+            <option value={120}>2 منٹ</option>
+            <option value={180}>3 منٹ</option>
+            <option value={240}>4 منٹ</option>
             <option value={300}>5 منٹ</option>
+            <option value={360}>6 منٹ</option>
+            <option value={420}>7 منٹ</option>
+            <option value={480}>8 منٹ</option>
+            <option value={540}>9 منٹ</option>
             <option value={600}>10 منٹ</option>
           </select>
         </div>
