@@ -114,12 +114,13 @@ function TypingPractice() {
     setNetWpm(Math.max(0, net));
     
     // Accuracy
-    const acc = totalKeystrokes > 0 
-      ? Math.round((correctKeystrokes / totalKeystrokes) * 100) 
+    const totalAttempted = correctKeystrokes + uncorrectedErrors;
+    const acc = totalAttempted > 0 
+      ? Math.round((correctKeystrokes / totalAttempted) * 100) 
       : 100;
     setAccuracy(Math.max(0, acc));
 
-  }, [typedWords, currentInput, words, activeIndex, timeLeft, timeLimit]);
+  }, [typedWords, currentInput, words, activeIndex, startTime]);
 
   useEffect(() => {
     if (isRunning && !startTime) {
@@ -137,7 +138,7 @@ function TypingPractice() {
     
     const sessionData = {
       date: new Date().toISOString(),
-      wpm: netWpm, // Saving Net WPM as main WPM
+      wpm: netWpm,
       cpm: Math.round(netWpm * 5),
       accuracy,
       errors
@@ -151,6 +152,21 @@ function TypingPractice() {
       localStorage.setItem('typingHistory', JSON.stringify(localData));
     }
   }, [calculateStats, netWpm, accuracy, errors]);
+
+  // Timer interval logic
+  useEffect(() => {
+    let timerId;
+    if (isRunning && timeLeft > 0) {
+      timerId = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && isRunning) {
+      handleTimeUp();
+    }
+    return () => {
+      if (timerId) clearInterval(timerId);
+    };
+  }, [isRunning, timeLeft, handleTimeUp]);
 
   const resetState = () => {
     setTypedWords([]);
