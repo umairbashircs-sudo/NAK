@@ -190,15 +190,15 @@ function TypingPractice() {
             disabled={isRunning}
             dir="rtl"
           >
-            <option value={1}>لیول 1 (Home Row)</option>
-            <option value={2}>لیول 2 (Top Row)</option>
-            <option value={3}>لیول 3 (Bottom Row)</option>
-            <option value={4}>لیول 4 (Shift Modifiers)</option>
-            <option value={5}>لیول 5 (Short Words)</option>
-            <option value={6}>لیول 6 (Medium Words)</option>
-            <option value={7}>لیول 7 (Sentences)</option>
-            <option value={8}>لیول 8 (Complex)</option>
-            <option value={9}>لیول 9 (Paragraphs)</option>
+            <option value={1}>لیول 1 (Basic Words)</option>
+            <option value={2}>لیول 2 (Sentences)</option>
+            <option value={3}>لیول 3 (Easy Paragraphs)</option>
+            <option value={4}>لیول 4 (Paragraphs)</option>
+            <option value={5}>لیول 5 (Medium Paragraphs)</option>
+            <option value={6}>لیول 6 (Advanced Paragraphs)</option>
+            <option value={7}>لیول 7 (Hard Paragraphs)</option>
+            <option value={8}>لیول 8 (Complex Paragraphs)</option>
+            <option value={9}>لیول 9 (Expert Paragraphs)</option>
             <option value={10}>لیول 10 (News Articles)</option>
           </select>
 

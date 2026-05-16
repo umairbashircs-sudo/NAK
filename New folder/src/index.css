@@ -28,9 +28,9 @@ body {
 
 /* Urdu Typography */
 .urdu-text {
-  font-family: 'Noto Nastaliq Urdu', serif;
-  line-height: 2.2;
-  font-size: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  line-height: 2;
+  font-size: 1.8rem;
 }
 
 .app-container {
@@ -55,7 +55,7 @@ body {
 }
 
 .logo {
-  font-family: 'Noto Nastaliq Urdu', serif;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   color: var(--primary-color);
@@ -180,9 +180,11 @@ body {
 }
 
 .word {
-  display: inline-flex;
+  display: inline-block;
   border-bottom: 2px solid transparent;
   transition: all 0.2s ease;
+  padding: 0 0.2rem;
+  margin: 0 0.2rem;
 }
 
 .word.active-word {
